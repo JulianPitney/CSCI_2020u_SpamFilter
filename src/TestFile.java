@@ -1,3 +1,4 @@
+import java.io.File;
 import java.text.DecimalFormat;
 
 
@@ -6,16 +7,24 @@ public class TestFile {
     private String filename;
     private double spamProbability;
     private String actualClass;
+    private File actualFile;
 
 
 
-    public TestFile(String filename, double spamProbability, String actualClass)
+    public TestFile(String filename, double spamProbability, String actualClass, File actualFile)
     {
         this.filename = filename;
         this.spamProbability = spamProbability;
         this.actualClass = actualClass;
+        this.actualFile = actualFile;
     }
 
+    public void printInfo()
+    {
+        System.out.println("FileName= " + this.getFilename());
+        System.out.println("FileType= " + this.getActualClass());
+        System.out.println("SpamProb= " + this.getSpamProbRounded());
+    }
 
     public String getFilename()
     {
@@ -38,6 +47,8 @@ public class TestFile {
         return this.actualClass;
     }
 
+    public File getActualFile () {return this.actualFile;}
+
     public void setFilename(String value)
     {
         this.filename = value;
@@ -53,5 +64,5 @@ public class TestFile {
         this.actualClass = value;
     }
 
-
+    public void setActualFile (File actualFile) { this.actualFile = actualFile;}
 }

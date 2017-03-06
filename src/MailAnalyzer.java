@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
@@ -19,7 +20,7 @@ public class MailAnalyzer {
 
     public HashMap<String, Integer> build_frequency_map (File[] fileInput) throws IOException {
 
-        String fileContent;
+        String fileContents;
         String[] words;
         HashMap<String, Integer> frequencyMapOutput = new HashMap<>();
 
@@ -28,10 +29,10 @@ public class MailAnalyzer {
         {
 
             // Read contents of current file into string
-            fileContent = new String(Files.readAllBytes(fileInput[i].toPath()));
+            fileContents = new String(Files.readAllBytes(fileInput[i].toPath()));
 
             // Split contents into words
-            words = fileContent.split("[-!~.,:;\\s]+");
+            words = fileContents.split("[-!~.,:;\\s]+");
 
             // Unique words in current file
             HashSet<String> thisFilesUniqueWords = new HashSet<>();
@@ -96,9 +97,9 @@ public class MailAnalyzer {
 
 
 
-    public HashMap<String, Double> build_file_spam_probability_map (HashMap<String, Double> spamWordProbabilityMap, HashMap<String, Double> hamWordProbabilityMap)
+    public HashMap<String, Double> build_file_is_spam_probability_map (HashMap<String, Double> spamWordProbabilityMap, HashMap<String, Double> hamWordProbabilityMap)
     {
-        HashMap<String, Double> fileSpamProbabilityMapOutput = new HashMap<>();
+        HashMap<String, Double> fileIsSpamProbabilityMapOutput = new HashMap<>();
 
         for (String s: spamWordProbabilityMap.keySet())
         {
@@ -106,9 +107,57 @@ public class MailAnalyzer {
             double hamWordProbability = hamWordProbabilityMap.getOrDefault(s, 0.0);
             double fileSpamProbability = (spamWordProbability / (spamWordProbability + hamWordProbability));
 
-            fileSpamProbabilityMapOutput.put(s, fileSpamProbability);
+            fileIsSpamProbabilityMapOutput.put(s, fileSpamProbability);
         }
 
-        return fileSpamProbabilityMapOutput;
+        return fileIsSpamProbabilityMapOutput;
+    }
+
+
+    public ArrayList<TestFile> convert_to_TestFile_list (File[] inputFiles, String fileType)
+    {
+        ArrayList<TestFile> outputArr = new ArrayList<>(inputFiles.length);
+
+        for (int i = 0; i < inputFiles.length; i++)
+        {
+            TestFile temp = new TestFile(inputFiles[i].getName(), 0.0, fileType, inputFiles[i]);
+            outputArr.add(i, temp);
+        }
+
+        return outputArr;
+    }
+
+
+
+    public void compute_spam_probability (HashMap<String, Double> PrSWMap, ArrayList<TestFile> inputFiles) throws IOException {
+
+        String fileContents;
+        String[] words;
+        double fileIsSpamProbabilty;
+
+        for (int i = 0; i < inputFiles.size(); i++)
+        {
+            // Read contents of current file into string
+            fileContents = new String(Files.readAllBytes(inputFiles.get(i).getActualFile().toPath()));
+
+            // Split contents into words
+            words = fileContents.split("[-!~.,:;\\s]+");
+            double n = 0.0;
+
+            for (int x = 0; x < words.length; x++)
+            {
+                Double currentWordProb = PrSWMap.get(words[x]);
+                if (currentWordProb != null && currentWordProb != 0 && currentWordProb != 1)
+                {
+                    n += (Math.log(1.0 - currentWordProb) - Math.log(currentWordProb));
+                }
+            }
+
+            fileIsSpamProbabilty = (1) / (1 + Math.pow(Math.E, n));
+
+
+            inputFiles.get(i).setSpamProbability(fileIsSpamProbabilty);
+
+        }
     }
 }
