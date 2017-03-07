@@ -147,15 +147,20 @@ public class MailAnalyzer {
             for (int x = 0; x < words.length; x++)
             {
                 Double currentWordProb = PrSWMap.get(words[x]);
-                if (currentWordProb != null && currentWordProb != 0 && currentWordProb != 1)
+
+                if (currentWordProb != null)
                 {
-                    n += (Math.log(1.0 - currentWordProb) - Math.log(currentWordProb));
+                    if (currentWordProb == 1.0)
+                    {
+                        currentWordProb = 0.9;
+                    }
+
+                    n += ((Math.log(1.0 - currentWordProb)) - (Math.log(currentWordProb)));
                 }
             }
 
-            fileIsSpamProbabilty = (1) / (1 + Math.pow(Math.E, n));
-
-
+            System.out.println("n= " + n);
+            fileIsSpamProbabilty = ((1.00) / (1.00 + Math.pow(Math.E, n)));
             inputFiles.get(i).setSpamProbability(fileIsSpamProbabilty);
 
         }

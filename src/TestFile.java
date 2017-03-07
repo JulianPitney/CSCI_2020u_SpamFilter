@@ -23,7 +23,7 @@ public class TestFile {
     {
         System.out.println("FileName= " + this.getFilename());
         System.out.println("FileType= " + this.getActualClass());
-        System.out.println("SpamProb= " + this.getSpamProbRounded());
+        System.out.println("SpamProb= " + this.getSpamProb());
     }
 
     public String getFilename()
@@ -41,6 +41,8 @@ public class TestFile {
         DecimalFormat df = new DecimalFormat("0.00000");
         return df.format(this.spamProbability);
     }
+
+    public Double getSpamProb() {return this.spamProbability;}
 
     public String getActualClass()
     {
