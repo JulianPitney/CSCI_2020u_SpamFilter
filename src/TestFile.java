@@ -4,45 +4,32 @@ import java.text.DecimalFormat;
 
 public class TestFile {
 
-    private String filename;
+    private String fileName;
     private double spamProbability;
     private String actualClass;
     private File actualFile;
 
 
 
-    public TestFile(String filename, double spamProbability, String actualClass, File actualFile)
+    public TestFile(String fileName, double spamProbability, String actualClass, File actualFile)
     {
-        this.filename = filename;
+        this.fileName = fileName;
         this.spamProbability = spamProbability;
         this.actualClass = actualClass;
         this.actualFile = actualFile;
     }
 
-    public void printInfo()
+
+    public String getFileName()
     {
-        System.out.println("FileName= " + this.getFilename());
-        System.out.println("FileType= " + this.getActualClass());
-        System.out.println("SpamProb= " + this.getSpamProb());
+        return this.fileName;
     }
 
-    public String getFilename()
-    {
-        return this.filename;
-    }
-
-    public double getSpamProbability()
-    {
-        return this.spamProbability;
-    }
-
-    public String getSpamProbRounded()
+    public String getSpamProbability()
     {
         DecimalFormat df = new DecimalFormat("0.00000");
         return df.format(this.spamProbability);
     }
-
-    public Double getSpamProb() {return this.spamProbability;}
 
     public String getActualClass()
     {
@@ -53,7 +40,7 @@ public class TestFile {
 
     public void setFilename(String value)
     {
-        this.filename = value;
+        this.fileName = value;
     }
 
     public void setSpamProbability(double val)

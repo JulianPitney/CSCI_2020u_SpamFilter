@@ -150,6 +150,8 @@ public class MailAnalyzer {
 
                 if (currentWordProb != null)
                 {
+
+                    // Ensure currentWordProb != 1.0 because n becomes -INFINITY in this case
                     if (currentWordProb == 1.0)
                     {
                         currentWordProb = 0.9;
@@ -159,7 +161,7 @@ public class MailAnalyzer {
                 }
             }
 
-            System.out.println("n= " + n);
+
             fileIsSpamProbabilty = ((1.00) / (1.00 + Math.pow(Math.E, n)));
             inputFiles.get(i).setSpamProbability(fileIsSpamProbabilty);
 

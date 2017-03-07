@@ -1,10 +1,13 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -17,41 +20,19 @@ import java.util.HashMap;
 
 public class Table extends Application {
 
-    private TableView table = new TableView();
-    static String dataDirectoryPath = "C:\\Users\\jp183\\Desktop\\Courses\\Software Systems Dev and Integration\\CSCI2020u_Assignments\\CSCI2020u_assignment1\\assignment1_data\\data";
+    private TableView<TestFile> table = new TableView<>();
+    static String dataDirectoryPath = "C:\\Julian_Stuff\\Courses_Laptop\\Software Systems Dev and Integration\\CSCI2020u_Assignments\\CSCI2020u_assignment1\\assignment1_data\\data";
 
-    @Override
-    public void start(Stage stage) {
-        Scene scene = new Scene(new Group());
-        stage.setTitle("Table View Sample");
-        stage.setWidth(300);
-        stage.setHeight(500);
 
-        final Label label = new Label("Address Book");
-        label.setFont(new Font("Arial", 20));
+    public static void main(String[] args) {
 
-        table.setEditable(true);
-
-        TableColumn firstNameCol = new TableColumn("First Name");
-        TableColumn lastNameCol = new TableColumn("Last Name");
-        TableColumn emailCol = new TableColumn("Email");
-
-        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
-
-        final VBox vbox = new VBox();
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(label, table);
-
-        ((Group) scene.getRoot()).getChildren().addAll(vbox);
-
-        stage.setScene(scene);
-        stage.show();
+        Application.launch(args);
     }
 
 
-    public static void main(String[] args) throws IOException {
 
+    @Override
+    public void start(Stage stage) throws IOException {
 
         MailAnalyzer mailAnalyzer = new MailAnalyzer();
 
@@ -84,26 +65,53 @@ public class Table extends Application {
         ArrayList<TestFile> testSpamResults = mailAnalyzer.convert_to_TestFile_list(testSpamFiles, "Spam");
         ArrayList<TestFile> testHamResults = mailAnalyzer.convert_to_TestFile_list(testHamFiles, "Ham");
 
-        System.out.println("Entering probability computation phase...");
+
         mailAnalyzer.compute_spam_probability(Pr_SW, testSpamResults);
         mailAnalyzer.compute_spam_probability(Pr_SW, testHamResults);
 
-
-
-        for (int i = 0; i < testSpamResults.size(); i++)
-        {
-            testSpamResults.get(i).printInfo();
-            System.out.println();
-        }
-
         for (int i = 0; i < testHamResults.size(); i++)
         {
-            testHamResults.get(i).printInfo();
-            System.out.println();
+            testSpamResults.add(testHamResults.get(i));
         }
 
+        final ObservableList<TestFile> data = FXCollections.observableArrayList(testSpamResults);
 
-        Application.launch(args);
+
+
+
+        Scene scene = new Scene(new Group());
+        stage.setTitle("File Filter");
+        stage.setWidth(1920);
+        stage.setHeight(1080);
+
+        final Label label = new Label("Results");
+        label.setFont(new Font("Arial", 20));
+
+        table.setEditable(true);
+
+        TableColumn fileNameCol = new TableColumn("File");
+        fileNameCol.setMinWidth(300);
+        fileNameCol.setCellValueFactory(new PropertyValueFactory<TestFile, String>("fileName"));
+
+        TableColumn actualClassCol = new TableColumn("Actual Class");
+        actualClassCol.setMinWidth(100);
+        actualClassCol.setCellValueFactory(new PropertyValueFactory<TestFile, String>("actualClass"));
+
+        TableColumn spamProbCol = new TableColumn("Spam Probability");
+        spamProbCol.setMinWidth(200);
+        spamProbCol.setCellValueFactory(new PropertyValueFactory<TestFile, String>("spamProbability"));
+
+        table.setItems(data);
+        table.getColumns().addAll(fileNameCol, actualClassCol, spamProbCol);
+
+        final VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(10, 0, 0, 10));
+        vbox.getChildren().addAll(label, table);
+
+        ((Group) scene.getRoot()).getChildren().addAll(vbox);
+
+        stage.setScene(scene);
+        stage.show();
     }
-
 }
