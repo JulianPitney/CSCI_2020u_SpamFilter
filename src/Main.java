@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Main {
 
-   static String dataDirectoryPath = "C:\\Julian_Stuff\\Courses_Laptop\\Software Systems Dev and Integration\\CSCI2020u_Assignments\\CSCI2020u_assignment1\\assignment1_data\\data";
+   static String dataDirectoryPath = "C:\\Users\\jp183\\Desktop\\Courses\\Software Systems Dev and Integration\\CSCI2020u_Assignments\\CSCI2020u_assignment1\\assignment1_data\\data";
 
 
     public static void main (String[] args) throws IOException {
@@ -52,11 +52,24 @@ public class Main {
         mailAnalyzer.compute_spam_probability(Pr_SW, testHamResults);
 
 
-        for (int i = 0; i < testSpamResults.size(); i++)
+      /*  for (int i = 0; i < testSpamResults.size(); i++)
         {
             testSpamResults.get(i).printInfo();
-            testHamResults.get(i).printInfo();
+            System.out.println();
         }
+
+        for (int i = 0; i < testHamResults.size(); i++)
+        {
+            testHamResults.get(i).printInfo();
+            System.out.println();
+        }
+        */
+
+
+
+
+
+
 
     }
 }
