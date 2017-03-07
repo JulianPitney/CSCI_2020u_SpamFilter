@@ -159,10 +159,8 @@ public class MailAnalyzer {
                 }
             }
 
-            System.out.println("n=" + n);
+            System.out.println("n= " + n);
             fileIsSpamProbabilty = ((1.00) / (1.00 + Math.pow(Math.E, n)));
-
-
             inputFiles.get(i).setSpamProbability(fileIsSpamProbabilty);
 
         }

@@ -1,19 +1,56 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
+public class Table extends Application {
+
+    private TableView table = new TableView();
+    static String dataDirectoryPath = "C:\\Users\\jp183\\Desktop\\Courses\\Software Systems Dev and Integration\\CSCI2020u_Assignments\\CSCI2020u_assignment1\\assignment1_data\\data";
+
+    @Override
+    public void start(Stage stage) {
+        Scene scene = new Scene(new Group());
+        stage.setTitle("Table View Sample");
+        stage.setWidth(300);
+        stage.setHeight(500);
+
+        final Label label = new Label("Address Book");
+        label.setFont(new Font("Arial", 20));
+
+        table.setEditable(true);
+
+        TableColumn firstNameCol = new TableColumn("First Name");
+        TableColumn lastNameCol = new TableColumn("Last Name");
+        TableColumn emailCol = new TableColumn("Email");
+
+        table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
+
+        final VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(10, 0, 0, 10));
+        vbox.getChildren().addAll(label, table);
+
+        ((Group) scene.getRoot()).getChildren().addAll(vbox);
+
+        stage.setScene(scene);
+        stage.show();
+    }
 
 
-
-
-public class Main {
-
-   static String dataDirectoryPath = "C:\\Users\\jp183\\Desktop\\Courses\\Software Systems Dev and Integration\\CSCI2020u_Assignments\\CSCI2020u_assignment1\\assignment1_data\\data";
-
-
-    public static void main (String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
 
         MailAnalyzer mailAnalyzer = new MailAnalyzer();
@@ -52,7 +89,7 @@ public class Main {
         mailAnalyzer.compute_spam_probability(Pr_SW, testHamResults);
 
 
-        /*
+
         for (int i = 0; i < testSpamResults.size(); i++)
         {
             testSpamResults.get(i).printInfo();
@@ -64,13 +101,9 @@ public class Main {
             testHamResults.get(i).printInfo();
             System.out.println();
         }
-*/
 
 
-
-
-
-
-
+        Application.launch(args);
     }
+
 }
