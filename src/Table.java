@@ -79,13 +79,16 @@ public class Table extends Application {
                 }
 
 
-
+                // Calculating % of files whose spam probability was greater than 50% in the correct direction, and then displaying to textfield
                 percentCorrect.setText(String.valueOf(mailAnalyzer.calculate_percent_correct(analysisResults)));
                 dataPath.clear();
 
+                // Giving results of analysis to table
                 final ObservableList<TestFile> data = FXCollections.observableArrayList(analysisResults);
                 table.setEditable(true);
 
+
+                // Everything below here is just more javaFX setting up stuff or giving references to other stuff
                 TableColumn fileNameCol = new TableColumn("File");
                 fileNameCol.setMinWidth(300);
                 fileNameCol.setCellValueFactory(new PropertyValueFactory<TestFile, String>("fileName"));

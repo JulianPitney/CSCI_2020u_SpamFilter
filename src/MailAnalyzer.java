@@ -61,12 +61,15 @@ public class MailAnalyzer {
         return frequencyMapOutput;
     }
 
+    // Properly merges frequency maps
     public HashMap<String, Integer> merge_frequency_maps(HashMap<String, Integer> map1, HashMap<String, Integer> map2)
     {
         for (String s : map1.keySet()) {
 
+            // If key only exists in map1, add key + value from map1 into map2
             if (map2.putIfAbsent(s, map1.get(s)) != null)
             {
+                // If key already exists in both maps, add value of key from map1 to value of key from map2
                 map2.put(s, map2.get(s) + map1.get(s));
             }
         }
@@ -97,7 +100,8 @@ public class MailAnalyzer {
 
 
 
-    public HashMap<String, Double> build_file_is_spam_probability_map (HashMap<String, Double> spamWordProbabilityMap, HashMap<String, Double> hamWordProbabilityMap)
+    // Builds PrSW map from PrWS and PrWH maps
+    public HashMap<String, Double> build_PrSW_map(HashMap<String, Double> spamWordProbabilityMap, HashMap<String, Double> hamWordProbabilityMap)
     {
         HashMap<String, Double> fileIsSpamProbabilityMapOutput = new HashMap<>();
 
@@ -114,6 +118,7 @@ public class MailAnalyzer {
     }
 
 
+    // Just wraps File objects into TestFile objects
     public ArrayList<TestFile> convert_to_TestFile_list (File[] inputFiles, String fileType)
     {
         ArrayList<TestFile> outputArr = new ArrayList<>(inputFiles.length);
@@ -144,6 +149,8 @@ public class MailAnalyzer {
             words = fileContents.split("[-!~.,:;\\s]+");
             double n = 0.0;
 
+
+            // Calculate n using all words in current file
             for (int x = 0; x < words.length; x++)
             {
                 Double currentWordProb = PrSWMap.get(words[x]);
@@ -152,6 +159,7 @@ public class MailAnalyzer {
                 {
 
                     // Ensure currentWordProb != 1.0 because n becomes -INFINITY in this case
+                    // I guess I'll call this my attempt at improving results?
                     if (currentWordProb == 1.0)
                     {
                         currentWordProb = 0.9;
@@ -162,6 +170,7 @@ public class MailAnalyzer {
             }
 
 
+            // Calculate + set spamProbability of current file
             fileIsSpamProbabilty = ((1.00) / (1.00 + Math.pow(Math.E, n)));
             inputFiles.get(i).setSpamProbability(fileIsSpamProbabilty);
 
@@ -197,18 +206,21 @@ public class MailAnalyzer {
 
 
         // Generate map where key is a word and value is the probability that a file is spam given that it contains that key/word
-        HashMap<String, Double> Pr_SW = this.build_file_is_spam_probability_map(Pr_WS, Pr_WH);
+        HashMap<String, Double> Pr_SW = this.build_PrSW_map(Pr_WS, Pr_WH);
 
 
+        // Wrapping test files into TestFile objects
         File[] testSpamFiles = this.scan_directory(dataDirectoryPath + "\\test\\spam");
         File[] testHamFiles = this.scan_directory(dataDirectoryPath + "\\test\\ham");
         ArrayList<TestFile> testSpamResults = this.convert_to_TestFile_list(testSpamFiles, "Spam");
         ArrayList<TestFile> testHamResults = this.convert_to_TestFile_list(testHamFiles, "Ham");
 
 
+        // Determining spam probability for all test files
         this.compute_spam_probability(Pr_SW, testSpamResults);
         this.compute_spam_probability(Pr_SW, testHamResults);
 
+        // Merging spam and ham TestFiles into one list
         for (int i = 0; i < testHamResults.size(); i++)
         {
             testSpamResults.add(testHamResults.get(i));
